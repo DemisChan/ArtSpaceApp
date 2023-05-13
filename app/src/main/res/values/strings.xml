@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">Art Space App</string>
+    <!--  Painting name  -->
     <string name="mona_lisa">Mona Lisa</string>
     <string name="christ_baptism">The Baptism of Christ</string>
     <string name="starry_night">The Starry Night</string>
+    <string name="the_persistence_of_memory">The Persistence Of Memory</string>
+
+    <!--    Artist Name -->
+    <string name="Leonardo_da_Vinci">Leonardo da Vinci</string>
+    <string name="Andrea_del_Verrocchio">Andrea del Verrocchio</string>
+    <string name="Vincent_van_Gogh">Vincent van Gogh</string>
+    <string name="Salvador_dali">Salvador Dali</string>
+
 </resources>
