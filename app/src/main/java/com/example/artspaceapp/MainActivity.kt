@@ -11,9 +11,15 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
@@ -29,12 +35,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.artspaceapp.ui.theme.ArtSpaceAppTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +61,29 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+val images = listOf(
+    Image(
+        image = R.drawable.monalisa,
+        title = R.string.mona_lisa,
+        artist = R.string.Leonardo_da_Vinci
+    ),
+    Image(
+        image = R.drawable.starrynight,
+        title = R.string.starry_night,
+        artist = R.string.Vincent_van_Gogh
+    ),
+    Image(
+        image = R.drawable.bapismofchrist,
+        title = R.string.christ_baptism,
+        artist = R.string.Andrea_del_Verrocchio
+    ),
+    Image(
+        image = R.drawable.the_persistence_of_memory,
+        title = R.string.the_persistence_of_memory,
+        artist = R.string.Salvador_dali
+    ),
+)
+
 @Composable
 fun ImageArtAndDescription(
     image: Int,
@@ -60,6 +91,7 @@ fun ImageArtAndDescription(
     artist: Int,
     modifier: Modifier = Modifier
 ) {
+    // TODO: play with image scale, content scale weight etc
     Column(
         modifier = modifier
             .padding(10.dp),
@@ -69,19 +101,20 @@ fun ImageArtAndDescription(
             painter = painterResource(id = image),
             contentDescription = "Art Piece",
             modifier = modifier
-                .border(BorderStroke(1.dp, Color.Black))
-                .background(Color.White)
+                .border(BorderStroke(1.dp, Color.Black), shape = RoundedCornerShape(4.dp))
+                .size(250.dp, 350.dp)
                 .padding(10.dp)
-                .shadow(10.dp)
-                .weight(0.7f, false),
+
         )
         Card(
             modifier = modifier
                 .padding(
                     horizontal = 20.dp,
-                    vertical = 20.dp)
+                    vertical = 20.dp
+                )
                 .align(Alignment.CenterHorizontally),
-            elevation = 6.dp,) {
+            elevation = 6.dp,
+        ) {
             Text(
                 text = stringResource(id = title),
                 fontSize = 24.sp,
@@ -89,17 +122,17 @@ fun ImageArtAndDescription(
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(4.dp)
-
             )
+//            Spacer(modifier = Modifier.height(10.dp))
         }
-        Surface(
-            border = BorderStroke(1.dp, Color.Gray),
+        Card(
             modifier = modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(2.dp),
-            elevation = 5.dp,
-            color = Color.LightGray
-
+                .padding(
+                    horizontal = 20.dp,
+                    vertical = 20.dp
+                )
+                .align(Alignment.CenterHorizontally),
+            elevation = 6.dp,
         ) {
             Text(
                 text = stringResource(id = artist),
@@ -112,10 +145,11 @@ fun ImageArtAndDescription(
     }
 }
 
+
 @Composable
-fun NextButton(click: Int) {
+fun NextButton(onClick: () -> Unit) {
     Button(
-        onClick = { click },
+        onClick = onClick,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(4.dp)
@@ -126,9 +160,9 @@ fun NextButton(click: Int) {
 }
 
 @Composable
-fun PreviousButton(click: Int) {
+fun PreviousButton(onClick: () -> Unit) {
     Button(
-        onClick = { click },
+        onClick = onClick,
         shape = RoundedCornerShape(10.dp),
         modifier = Modifier
             .padding(4.dp)
@@ -142,42 +176,37 @@ fun PreviousButton(click: Int) {
 @Composable
 fun ArtSpaceApp(
 ) {
-    var click by remember { mutableStateOf(0) }
-    when (click) {
-        0 -> ImageArtAndDescription(
-            image = R.drawable.monalisa,
-            title = R.string.mona_lisa,
-            artist = R.string.Leonardo_da_Vinci
-        )
-
-        1 -> ImageArtAndDescription(
-            image = R.drawable.starrynight,
-            title = R.string.starry_night,
-            artist = R.string.Vincent_van_Gogh
-        )
-
-        2 -> ImageArtAndDescription(
-            image = R.drawable.bapismofchrist,
-            title = R.string.christ_baptism,
-            artist = R.string.Andrea_del_Verrocchio
-        )
-
-        else -> ImageArtAndDescription(
-            image = R.drawable.the_persistence_of_memory,
-            title = R.string.the_persistence_of_memory,
-            artist = R.string.Salvador_dali
-        )
-    }
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.Bottom,
+    var clickIndex by remember { mutableStateOf(0) }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(bottom = 50.dp)
+            .fillMaxSize()
+            .padding(bottom = 50.dp),
     ) {
-        PreviousButton(click--)
-        NextButton(click++)
-        Log.d("++++++++++++++++++++++", "$click")
+        ImageArtAndDescription(
+            image = images[clickIndex].image,
+            title = images[clickIndex].title,
+            artist = images[clickIndex].artist,
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier
+                .padding(bottom = 50.dp)
+        ) {
+            PreviousButton(onClick = {
+                if (clickIndex <= 0) clickIndex = 0 else {
+                    clickIndex--
+                }
+            })
+            NextButton(onClick = {
+                if (clickIndex >= images.size - 1) clickIndex = images.size - 1 else {
+                    clickIndex++
+                }
+            })
+            Log.d("++++++++++++++++++++++", "$clickIndex")
+        }
     }
 }
 
@@ -186,7 +215,7 @@ fun ArtSpaceApp(
 fun ImagePreview() {
     ArtSpaceAppTheme {
         ImageArtAndDescription(
-            image = R.drawable.monalisa,
+            image = R.drawable.starrynight,
             title = R.string.mona_lisa,
             artist = R.string.Leonardo_da_Vinci
         )
@@ -197,8 +226,8 @@ fun ImagePreview() {
 @Composable
 fun ButtonPreview() {
     Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-        PreviousButton(1)
-        NextButton(1)
+        PreviousButton {}
+        NextButton {}
     }
 }
 
